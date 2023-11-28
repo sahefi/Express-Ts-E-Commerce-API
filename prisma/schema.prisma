@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:1234@localhost:5432/db_anto-gunshop?schema=public"
+}
+
+model User{
+  id        String    @id@default(uuid())
+  username  String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  staff Staff[]
+  customer Customer[]
+}
+
+model Staff{
+  id        String    @id@default(uuid())
+  name      String    
+  email     String
+  no_phone  Int
+  created_at    DateTime  @default(now())
+  update_at     DateTime  @updatedAt
+  deleted_at    DateTime?
+  id_user      String?
+
+  user User?  @relation(fields: [id_user],references: [id])
+
+
+}
+
+model Customer{
+  id        String    @id@default(uuid())
+  name      String    
+  email     String
+  no_phone  Int
+  birth     DateTime
+  province  String?
+  city      String?
+  distric   String?
+  village   String?
+  created_at    DateTime  @default(now())
+  update_at     DateTime  @updatedAt
+  deleted_at    DateTime?
+  id_user      String?
+
+  user User?  @relation(fields: [id_user],references: [id])
+  cart Cart[]
+}
+
+model Product{
+  id          String    @id@default(uuid())
+  name        String
+  description   String
+  price       Decimal
+  image_link  String
+  type_ammo   String?
+  type_gun    String
+  max_ammo    Int        @default(0)
+  
+  cart Cart[]
+
+}
+
+model Cart{
+  id      String      @id@default(uuid())
+  id_product  String?
+  id_customer String?
+
+  customer Customer? @relation(fields: [id_customer],references: [id])
+
+  product Product? @relation(fields: [id_product],references: [id])
+}
+
+model Gco{
+  id     String       @id@default(uuid())
+  name   String
+  type   String
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+  
+}
+
