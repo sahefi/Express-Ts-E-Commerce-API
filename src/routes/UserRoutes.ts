@@ -1,6 +1,6 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
-import UserService from '@src/services/UserService';
+import UserService from '@src/services/User/UserService';
 import { IUser } from '@src/models/User';
 import { IReq, IRes } from './types/express/misc';
 
@@ -10,10 +10,7 @@ import { IReq, IRes } from './types/express/misc';
 /**
  * Get all users.
  */
-async function getAll(_: IReq, res: IRes) {
-  const users = await UserService.getAll();
-  return res.status(HttpStatusCodes.OK).json({ users });
-}
+
 
 /**
  * Add one user.
@@ -46,7 +43,6 @@ async function delete_(req: IReq, res: IRes) {
 // **** Export default **** //
 
 export default {
-  getAll,
   add,
   update,
   delete: delete_,

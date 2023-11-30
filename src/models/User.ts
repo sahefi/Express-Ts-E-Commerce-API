@@ -80,8 +80,26 @@ username :string
 password :string
 name:string
 email:string
-no_phone:number
+no_phone:string
 birth:string
+}
+
+export interface IUpdated{
+id_customer:string
+username:string
+name:string
+email:string
+no_phone:string
+birth:string
+}
+
+export interface IList{
+  page:number,
+  per_page:number
+}
+
+export interface IDelete{
+  id_customer:string
 }
 
 

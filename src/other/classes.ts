@@ -26,6 +26,14 @@ export class BadRequestException extends Error {
     this.status = HttpStatusCodes.BAD_REQUEST
   }
 }
+export class NotFoundException extends Error {
+  public status: HttpStatusCodes
+
+  public constructor(message: string){
+    super(message);
+    this.status = HttpStatusCodes.NOT_FOUND
+  }
+}
 
 
 

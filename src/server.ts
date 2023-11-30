@@ -18,8 +18,10 @@ import EnvVars from '@src/constants/EnvVars';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
 import { NodeEnvs } from '@src/constants/misc';
-import { BadRequestException, RouteError } from '@src/other/classes';
+import { BadRequestException, NotFoundException, RouteError } from '@src/other/classes';
 import { PrismaClient } from '@prisma/client';
+import  userController from '@src/API/User/UserController'
+import staffController from '@src/API/Staff/StaffController'
 
 
 // **** Variables **** //
@@ -67,6 +69,9 @@ app.use((
   else if ( err instanceof BadRequestException){
     status = HttpStatusCodes.BAD_REQUEST
   }
+  else if ( err instanceof NotFoundException){
+    status = HttpStatusCodes.NOT_FOUND
+  }
   return res.status(status).json({ error: err.message });
 });
 
@@ -96,7 +101,8 @@ app.get('/users', (req: Request, res: Response) => {
   }
 });
 
-
+app.use('/user',userController)
+app.use('/staff',staffController)
 // **** Export default **** //
 
 export {app,prisma};

@@ -13,7 +13,7 @@ datasource db {
 model User{
   id        String    @id@default(uuid())
   username  String    @unique
-  password  String
+  password  String?
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   deleteAt  DateTime?
@@ -26,7 +26,7 @@ model Staff{
   id        String    @id@default(uuid())
   name      String    
   email     String
-  no_phone  Int
+  no_phone  String
   created_at    DateTime  @default(now())
   update_at     DateTime  @updatedAt
   deleted_at    DateTime?
@@ -40,8 +40,8 @@ model Staff{
 model Customer{
   id        String    @id@default(uuid())
   name      String    
-  email     String
-  no_phone  Int
+  email     String    @db.VarChar(200)
+  no_phone  String  
   birth     DateTime
   province  String?
   city      String?

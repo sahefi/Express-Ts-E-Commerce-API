@@ -42,7 +42,6 @@ const userRouter = Router();
 // Get all users
 userRouter.get(
   Paths.Users.Get,
-  UserRoutes.getAll,
 );
 
 // Add one user
