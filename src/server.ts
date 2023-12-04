@@ -23,7 +23,9 @@ import { PrismaClient } from '@prisma/client';
 import  userController from '@src/API/User/UserController'
 import staffController from '@src/API/Staff/StaffController'
 import roleController from '@src/API/Role/RoleController'
-
+import gcoController from '@src/API/GCO/GCOContorller'
+import productController from '@src/API/Product/ProductController'
+import commonController from '@src/API/Common/UploadController'
 // **** Variables **** //
 
 const app = express();
@@ -104,6 +106,9 @@ app.get('/users', (req: Request, res: Response) => {
 app.use('/user',userController)
 app.use('/staff',staffController)
 app.use('/role',roleController)
+app.use('/gco',gcoController)
+app.use('/product',productController)
+app.use('/common',commonController)
 // **** Export default **** //
 
 export {app,prisma};

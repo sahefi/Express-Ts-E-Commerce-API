@@ -73,11 +73,13 @@ model Product{
   name        String
   description   String
   price       Decimal
-  image_link  String
+  image_link  String?
   type_ammo   String?
-  type_gun    String
+  type_gun    String?
   max_ammo    Int        @default(0)
-  
+
+  typeAmmo     Gco?      @relation("TypeAmmo", fields: [type_ammo], references: [id])
+  typeGun      Gco?      @relation("TypeGun", fields: [type_gun], references: [id])
   cart Cart[]
 
 }
@@ -99,6 +101,9 @@ model Gco{
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   deleteAt  DateTime?
+
+  productAmmo Product[] @relation("TypeAmmo")
+  productGun  Product[] @relation("TypeGun")
   
 }
 

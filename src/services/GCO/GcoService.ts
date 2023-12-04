@@ -1,7 +1,7 @@
 import { ICreateGCO } from "@src/models/Gco";
 import { prisma } from "@src/server";
 
-async function name(req:ICreateGCO) {
+async function Create(req:ICreateGCO) {
     const create = await prisma.gco.create({
         data:req
     })
@@ -11,4 +11,8 @@ async function name(req:ICreateGCO) {
         message:'Success',
         data:create
     }
+}
+
+export default{
+    Create
 }
