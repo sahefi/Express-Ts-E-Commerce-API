@@ -1,5 +1,4 @@
-import { ICreatedStaff, IListStaff, IUpdatedStaff } from "@src/models/Staff";
-import { ICreated } from "@src/models/User";
+import { ICreatedStaff, IDeleteStaff, IListStaff, IUpdatedStaff } from "@src/models/Staff";
 import { BadRequestException, NotFoundException } from "@src/other/classes";
 import { prisma } from "@src/server";
 import bcrypt from "bcrypt"
@@ -17,9 +16,13 @@ async function createStaff(req:ICreatedStaff) {
         }
         const hashed = await bcrypt.hash(req.password,10)
         const createUSer = await tx.user.create({
+            include:{
+                role:true
+            },
             data:{
                 username:req.username,
-                password:hashed
+                password:hashed,
+                id_role:req.id_role
             }
         })
         const createStaff = await tx.staff.create({
@@ -50,12 +53,17 @@ async function createStaff(req:ICreatedStaff) {
 async function updateStaff(req:IUpdatedStaff) {
 
     const result = await prisma.$transaction(async(tx)=>{
+        const findRole = await tx.role.findUnique({
+            where:{
+                id:req.id_role
+            }
+        })
         const find = await tx.staff.findUnique({
             where:{
                 id:req.id_staff
             }
         })
-        if(!find){
+        if(!find && !findRole){
             throw new NotFoundException('ID Not Found')
         }
 
@@ -75,7 +83,8 @@ async function updateStaff(req:IUpdatedStaff) {
                 id:updateStaff.id_user || undefined
             },
             data:{
-                username:req.username
+                username:req.username,
+                id:req.id_role
             }
         })
         return{
@@ -84,7 +93,8 @@ async function updateStaff(req:IUpdatedStaff) {
                 username:updateUser.username,
                 name:updateStaff.name,
                 email:updateStaff.email,
-                no_phone:updateStaff.no_phone
+                no_phone:updateStaff.no_phone,
+                id_role:updateUser.id_role
             }
         }
     })
@@ -121,7 +131,8 @@ async function listStaff(req:IListStaff) {
             username:item.user?.username,
             name:item.name,
             email:item.email,
-            no_phone:item.no_phone
+            no_phone:item.no_phone,
+            id_role:item.user?.id_role
         }
     })
     return{
@@ -134,7 +145,40 @@ async function listStaff(req:IListStaff) {
     }
 }
 
+async function DeleteStaff(req:IDeleteStaff) {
+    const result = await prisma.$transaction(async(tx)=>{
+        const find = await tx.staff.findUnique({
+            where:{
+                id:req.id_staff
+            }
+        })
+        if(!find){
+            throw new NotFoundException('ID Not Found')
+        }
+
+        const deletStaff = await tx.staff.delete({
+            where:{
+                id:req.id_staff
+            }
+        })
+
+        const deleteUser = await tx.user.delete({
+            where:{
+                id:deletStaff.id_user ||undefined
+            }
+        })
+       
+    })
+    return{
+        status:true,
+        message:'Success',
+        data:null
+    }
+}
+
 export default{
     createStaff,
-    updateStaff
+    updateStaff,
+    listStaff,
+    DeleteStaff
 }

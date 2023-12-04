@@ -22,7 +22,7 @@ import { BadRequestException, NotFoundException, RouteError } from '@src/other/c
 import { PrismaClient } from '@prisma/client';
 import  userController from '@src/API/User/UserController'
 import staffController from '@src/API/Staff/StaffController'
-
+import roleController from '@src/API/Role/RoleController'
 
 // **** Variables **** //
 
@@ -103,6 +103,7 @@ app.get('/users', (req: Request, res: Response) => {
 
 app.use('/user',userController)
 app.use('/staff',staffController)
+app.use('/role',roleController)
 // **** Export default **** //
 
 export {app,prisma};

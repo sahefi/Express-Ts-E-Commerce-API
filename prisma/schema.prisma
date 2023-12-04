@@ -10,14 +10,26 @@ datasource db {
   url      = "postgresql://postgres:1234@localhost:5432/db_anto-gunshop?schema=public"
 }
 
-model User{
-  id        String    @id@default(uuid())
-  username  String    @unique
-  password  String?
+model Role{
+  id String @id@default(uuid())
+  name String
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   deleteAt  DateTime?
 
+  user User[]
+}
+
+model User{
+  id        String    @id@default(uuid())
+  username  String    @unique
+  password  String?
+  id_role   String
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  role Role? @relation(fields: [id_role],references: [id])
   staff Staff[]
   customer Customer[]
 }

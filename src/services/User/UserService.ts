@@ -59,7 +59,14 @@ async function Register(req:ICreated){
 
 
   const result = await prisma.$transaction(async(tx)=>{
+    const findRole = await tx.role.findFirst({
+      where:{
+        name:'Customer'
+      }
+    })
+    console.log(findRole)
     const find = await tx.user.findUnique({
+      
       where:{
         username:req.username
       }
@@ -73,7 +80,8 @@ async function Register(req:ICreated){
     const createUser = await tx.user.create({
       data:{
         username:req.username,
-        password:hashed
+        password:hashed,
+        id_role:findRole?.id
       }
     })
 
@@ -115,6 +123,11 @@ async function Register(req:ICreated){
 async function UpdateCustomer(req:IUpdated) {
   
   const result = await prisma.$transaction(async(tx)=>{
+    const findRole = await tx.role.findFirst({
+      where:{
+        name:'Customer'
+      }
+    })
     const find = await tx.customer.findUnique({
       where:{
         id:req.id_customer
@@ -123,7 +136,6 @@ async function UpdateCustomer(req:IUpdated) {
     if(!find){
       throw new NotFoundException('Id Not FOund')
     }
-    console.log('halo')
     const updateCustomer = await tx.customer.update({
       where:{
         id:req.id_customer
@@ -141,7 +153,7 @@ async function UpdateCustomer(req:IUpdated) {
         id:find.id_user || undefined
       },
       data:{
-        username:req.username
+        username:req.username,
       }
     })
     console.log('hello')
@@ -178,7 +190,6 @@ async function listCustomer(req:IList) {
     },
     take:take,skip:skip
   })
-
   const result = list.map((item)=>{
     return{
       id_customer:item.id,
@@ -186,7 +197,8 @@ async function listCustomer(req:IList) {
       name:item.name,
       email:item.email,
       no_phone:item.no_phone,
-      birth:moment(item.birth).format('DD-MM-YYYY')
+      birth:moment(item.birth).format('DD-MM-YYYY'),
+      id_role:item.user?.id_role
     }
   })
 

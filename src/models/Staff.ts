@@ -4,6 +4,7 @@ export interface ICreatedStaff{
     name:string
     email:string
     no_phone:string
+    id_role:string
 }
 
 export interface IUpdatedStaff{
@@ -12,9 +13,14 @@ export interface IUpdatedStaff{
     name:string
     email:string
     no_phone:string
+    id_role:string
 }
 
 export interface IListStaff{
     page:number,
     per_page:number
   }
+
+export interface IDeleteStaff{
+    id_staff:string
+}
