@@ -1,5 +1,6 @@
 import multer from "multer";
 import path from "path";
+import fs from "fs"
 
 export async function uploadMiddleware() {
     const storage = multer.diskStorage({
@@ -44,5 +45,14 @@ export async function uploadFile(req: any, res: any, next: any) {
     }
   }
   
+  export async function DeleteFile(filePath: string): Promise<void> {
+    try {
+      await fs.promises.unlink(filePath);
+      console.log('File deleted successfully:', filePath);
+    } catch (error) {
+      console.error('Error deleting file:', error);
+      throw new Error('Error deleting the image file');
+    }
+  }
 
   
