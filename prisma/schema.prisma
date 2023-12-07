@@ -86,6 +86,7 @@ model Product{
 
 model Cart{
   id      String      @id@default(uuid())
+  quantity Int
   id_product  String?
   id_customer String?
 
@@ -105,5 +106,14 @@ model Gco{
   productAmmo Product[] @relation("TypeAmmo")
   productGun  Product[] @relation("TypeGun")
   
+}
+
+model Company{
+  id    String      @id@default(uuid())
+  company_name  String  
+  description String  
+  logo_link        String
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
 }
 

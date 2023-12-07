@@ -35,5 +35,13 @@ export class NotFoundException extends Error {
   }
 }
 
+export class UnauthorizedException extends Error {
+  public status: HttpStatusCodes
+
+  public constructor(message: string){
+    super(message);
+    this.status = HttpStatusCodes.UNAUTHORIZED
+  }
+}
 
 

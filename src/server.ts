@@ -18,7 +18,7 @@ import EnvVars from '@src/constants/EnvVars';
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
 import { NodeEnvs } from '@src/constants/misc';
-import { BadRequestException, NotFoundException, RouteError } from '@src/other/classes';
+import { BadRequestException, NotFoundException, RouteError, UnauthorizedException } from '@src/other/classes';
 import { PrismaClient } from '@prisma/client';
 import  userController from '@src/API/User/UserController'
 import staffController from '@src/API/Staff/StaffController'
@@ -26,6 +26,9 @@ import roleController from '@src/API/Role/RoleController'
 import gcoController from '@src/API/GCO/GCOContorller'
 import productController from '@src/API/Product/ProductController'
 import commonController from '@src/API/Common/UploadController'
+import companyController from '@src/API/Company/CompanyControllert'
+import authController from '@src/API/Auth/AuthController'
+import cartConroller from '@src/API/Cart/CartController'
 // **** Variables **** //
 
 const app = express();
@@ -74,6 +77,9 @@ app.use((
   else if ( err instanceof NotFoundException){
     status = HttpStatusCodes.NOT_FOUND
   }
+  else if ( err instanceof UnauthorizedException){
+    status = HttpStatusCodes.UNAUTHORIZED
+  }
   return res.status(status).json({ error: err.message });
 });
 
@@ -109,6 +115,9 @@ app.use('/role',roleController)
 app.use('/gco',gcoController)
 app.use('/product',productController)
 app.use('/common',commonController)
+app.use('/company',companyController)
+app.use('/auth',authController)
+app.use('/cart',cartConroller)
 // **** Export default **** //
 
 export {app,prisma};

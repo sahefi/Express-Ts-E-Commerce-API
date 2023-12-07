@@ -1,11 +1,12 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes'
-import { ICreateProduct, IListProduct, IUpdateProduct } from '@src/models/Product'
+import { ICreateCompany, IListCompany, IUpdateCompany } from '@src/models/Company'
 import { NotFoundException } from '@src/other/classes'
 import { prisma } from '@src/server'
-import { DeleteFile, uploadFile, uploadMiddleware } from '@src/services/Common/uploadService'
-import ProductService from '@src/services/Product/ProductService'
+import { DeleteFile, uploadFile } from '@src/services/Common/uploadService'
+import CompanyService from '@src/services/Company/CompanyService'
 import express, { Request, Response } from 'express'
 import multer from 'multer'
+
 const router = express.Router()
 const upload = multer()
 
@@ -14,17 +15,14 @@ router.post('/',uploadFile,async(req:Request,res:Response)=>{
         if (!req.body.image_link) {
             return res.status(400).json({ status: false, message: 'File upload failed' });
           }
-        const reqDto:ICreateProduct = {
-            name:req.body.name as string,
-            description:req.body.description as string,
-            max_ammo:Number(req.body.max_ammo),
-            price:Number(req.body.price),
-            type_ammo:req.body.type_ammo as string,
-            type_gun:req.body.type_gun as string,
-            image_link: req.body.image_link
-        }
-        const create = await ProductService.Create(reqDto)
-        res.status(HttpStatusCodes.OK).send(create)
+          const reqDto:ICreateCompany = {
+            company_name:req.body.company_name as string,
+            desctiprion:req.body.description as string,
+            logo_link:req.body.image_link 
+          }
+
+          const create = await CompanyService.CreateCompany(reqDto)
+          res.status(HttpStatusCodes.OK).send(create)
     } catch (error) {
         if(error.status){
             res.status(error.status).send({
@@ -38,17 +36,18 @@ router.post('/',uploadFile,async(req:Request,res:Response)=>{
                 message:error.message,
                 data:null
             })
-        }  
+        }
     }
-    
 })
 
 router.get('/',async(req:Request,res:Response)=>{
-    
-    try {
-        const reqDto:IListProduct = {page:Number(req.query.page),per_page:Number(req.query.per_page)}
-        const listProduct = await ProductService.ListProduct(reqDto)
-        res.status(HttpStatusCodes.OK).send(listProduct)
+    try { 
+        const reqDto:IListCompany = {
+            page:Number(req.body.page),
+            per_page:Number(req.body.per_page)
+        }
+        const list = await CompanyService.ListCompany(reqDto)
+        res.status(HttpStatusCodes.OK).send(list)
     } catch (error) {
         if(error.status){
             res.status(error.status).send({
@@ -62,28 +61,25 @@ router.get('/',async(req:Request,res:Response)=>{
                 message:error.message,
                 data:null
             })
-        }  
         }
-    
+    }
 })
 
 router.patch('/',uploadFile,async(req:Request,res:Response)=>{
     try {
-            if (!req.body.image_link) {
-                return res.status(400).json({ status: false, message: 'File upload failed' });
-              }
-            const reqDto:IUpdateProduct = {
-                id_product:req.body.id_product as string,
-                name:req.body.name as string,
-                description:req.body.description as string,
-                max_ammo:Number(req.body.max_ammo),
-                price:Number(req.body.price),
-                type_ammo:req.body.type_ammo as string,
-                type_gun:req.body.type_gun as string,
-                image_link: req.body.image_link
-            }
-            const updateProduct = await ProductService.UpdateProduct(reqDto)
-            res.status(HttpStatusCodes.OK).send(updateProduct)
+        if (!req.body.image_link) {
+            return res.status(400).json({ status: false, message: 'File upload failed' });
+          }
+          
+        const reqDto:IUpdateCompany = {
+            id_company:req.body.id_company as string,
+            company_name:req.body.company_name as string,
+            desctiprion:req.body.description as string,
+            logo_link:req.body.image_link
+        }
+
+        const update = await CompanyService.UpdateCompany(reqDto)
+        res.status(HttpStatusCodes.OK).send(update)
     } catch (error) {
         if(error.status){
             res.status(error.status).send({
@@ -97,24 +93,24 @@ router.patch('/',uploadFile,async(req:Request,res:Response)=>{
                 message:error.message,
                 data:null
             })
-        }  
+        }
     }
 })
 
 router.delete('/',async(req:Request,res:Response)=>{
     try {
-        const find = await prisma.product.findUnique({
+        const find = await prisma.company.findUnique({
             where:{
-                id:req.body.id_product
+                id:req.body.id_company
             }
         })
         if(!find){
             throw new NotFoundException('Id Not Found')
         }
-        const filePathToDelete = find.image_link||''; // Make sure this is the correct file path
+        const filePathToDelete = find.logo_link || ''
         await DeleteFile(filePathToDelete);
-        const deleteProduct = await ProductService.DeleteProduct(find.id)
-        res.status(HttpStatusCodes.OK).send(deleteProduct)
+        const deleteCompany = await CompanyService.DeleteCompany(find.id)
+        res.status(HttpStatusCodes.OK).send(deleteCompany)
     } catch (error) {
         if(error.status){
             res.status(error.status).send({
@@ -132,5 +128,4 @@ router.delete('/',async(req:Request,res:Response)=>{
     }
     
 })
-
 export default router
