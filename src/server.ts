@@ -29,8 +29,11 @@ import commonController from '@src/API/Common/UploadController'
 import companyController from '@src/API/Company/CompanyControllert'
 import authController from '@src/API/Auth/AuthController'
 import cartConroller from '@src/API/Cart/CartController'
+import trasactionController from '@src/API/Transaction/TransactionController'
+import dotenv from 'dotenv';
 // **** Variables **** //
 
+dotenv.config()
 const app = express();
 const router = express.Router()
 const prisma = new PrismaClient()
@@ -118,6 +121,7 @@ app.use('/common',commonController)
 app.use('/company',companyController)
 app.use('/auth',authController)
 app.use('/cart',cartConroller)
+app.use('/transaction',trasactionController)
 // **** Export default **** //
 
 export {app,prisma};

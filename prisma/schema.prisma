@@ -66,6 +66,7 @@ model Customer{
 
   user User?  @relation(fields: [id_user],references: [id])
   cart Cart[]
+  bill_header Bill_Header[]
 }
 
 model Product{
@@ -81,6 +82,7 @@ model Product{
   typeAmmo     Gco?      @relation("TypeAmmo", fields: [type_ammo], references: [id])
   typeGun      Gco?      @relation("TypeGun", fields: [type_gun], references: [id])
   cart Cart[]
+  bill_detail Bill_Detail[]
 
 }
 
@@ -115,5 +117,67 @@ model Company{
   logo_link        String
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
+}
+model Bill_Header{
+  id String     @id@default(uuid())
+  id_customer   String
+  status_payment  Status_Payment
+  total         Decimal
+  payment_link  String?
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  customer Customer @relation(fields: [id_customer],references: [id])
+  bill_detail Bill_Detail[]
+}
+
+model Bill_Detail{
+  id    String    @id@default(uuid())
+  id_bill_header   String
+  id_product        String
+  qty       Int
+  price     Decimal
+  sub_total   Decimal
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  bill_header Bill_Header @relation(fields: [id_bill_header],references: [id])
+  product Product @relation(fields: [id_product],references: [id])
+}
+
+model Audit_Bill_Header{
+  id    String @id@default(uuid())
+  id_bill_header String
+  id_customer   String
+  status_payment  Status_Payment
+  total         Decimal
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  audit_bill_detail Audit_Bill_Detail[]
+
+}
+model Audit_Bill_Detail{
+  id    String    @id@default(uuid())
+  id_audit_bill_header  String
+  id_product        String
+  qty       Int
+  price     Decimal
+  sub_total   Decimal
+  createdAt DateTime  @default(now())
+  updateAt  DateTime  @updatedAt
+  deleteAt  DateTime?
+
+  audit_bill_header Audit_Bill_Header @relation(fields: [id_audit_bill_header],references: [id])
+
+}
+enum Status_Payment{
+  PAID
+  UNPAID
+  PENDING
+  CANCEL
 }
 
