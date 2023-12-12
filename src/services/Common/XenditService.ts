@@ -1,5 +1,6 @@
-import { IXendit } from "@src/models/Xendit";
+import { ICallbackXendit, IXendit } from "@src/models/Xendit";
 import { BadRequestException } from "@src/other/classes";
+import { prisma } from "@src/server";
 import axios, { AxiosResponse } from "axios";
 
 
@@ -35,4 +36,69 @@ export async function Invoice(req:IXendit) {
    return response.data
 
 
+
+}
+
+export async function CallbackXendit(req:ICallbackXendit) {
+    if(req.status === 'PAID'){
+        await prisma.bill_Header.findUniqueOrThrow({
+            where:{
+                id:req.external_id
+            }
+        })
+
+        await prisma.$transaction (async(tx)=>{
+            const paid = await tx.bill_Header.update({
+                where:{
+                    id:req.external_id
+                },
+                data:{
+                    status_payment:'PAID',
+                    payment_date:req.updated
+                },
+                include:{
+                    bill_detail:true
+                }
+            })
+
+            const auditBillHeader = await tx.audit_Bill_Header.create({
+                data:{
+                    id_bill_header:paid.id,
+                    id_customer:paid.id_customer,
+                    status_payment:paid.status_payment,
+                    total:paid.total,
+                }
+            })
+
+            await paid.bill_detail.map((item)=>{
+                const sub_total = Math.ceil(Number(item.sub_total))
+                return{
+                    id_audit_bill_header:auditBillHeader.id,
+                    id_product:item.id_product || '',
+                    price:Number(item.price),
+                    qty:item.qty,
+                    sub_total:sub_total
+                }
+            })
+            
+        })
+        return req
+    }else{
+        await prisma.bill_Header.findUniqueOrThrow({
+            where:{
+                id:req.external_id
+            }
+        })
+
+        const paid = await prisma.bill_Header.update({
+            where:{
+                id:req.external_id
+            },
+            data:{
+                status_payment:'CANCEL',
+            }
+        })
+        return req
+        
+    }
 }

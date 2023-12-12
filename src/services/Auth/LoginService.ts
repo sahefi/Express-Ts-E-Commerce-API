@@ -105,6 +105,7 @@ export function verifyJwt(req:Request,res:Response,next: NextFunction) {
         }
         const decode:JwtPayload = jwt.verify(token,secertKey,) as JwtPayload
         req.query.user=decode.id_customer
+        req.query.name=decode.username
        
         next()
     } catch (error) {

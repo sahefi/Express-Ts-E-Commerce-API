@@ -124,6 +124,7 @@ model Bill_Header{
   status_payment  Status_Payment
   total         Decimal
   payment_link  String?
+  payment_date  DateTime?
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   deleteAt  DateTime?
@@ -153,6 +154,7 @@ model Audit_Bill_Header{
   id_customer   String
   status_payment  Status_Payment
   total         Decimal
+  payment_date DateTime?
   createdAt DateTime  @default(now())
   updateAt  DateTime  @updatedAt
   deleteAt  DateTime?

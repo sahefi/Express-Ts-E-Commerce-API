@@ -1,6 +1,8 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IPayTransaction } from '@src/models/Transaction';
+import { ICallbackXendit } from '@src/models/Xendit';
 import { verifyJwt } from '@src/services/Auth/LoginService';
+import { CallbackXendit } from '@src/services/Common/XenditService';
 import TransactionService from '@src/services/Transaction/TransactionService';
 import express, { Request, Response, Router } from 'express';
 
@@ -27,6 +29,14 @@ router.post('/',verifyJwt,async (req:Request,res:Response) => {
         }
     }
 
+})
+
+router.post('/callback',async(req:Request,res:Response)=>{
+    
+        const reqDto = req.body as ICallbackXendit
+        const callback = await CallbackXendit(reqDto)
+        return res.status(HttpStatusCodes.OK).send(callback)
+    
 })
 
 

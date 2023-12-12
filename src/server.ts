@@ -30,7 +30,10 @@ import companyController from '@src/API/Company/CompanyControllert'
 import authController from '@src/API/Auth/AuthController'
 import cartConroller from '@src/API/Cart/CartController'
 import trasactionController from '@src/API/Transaction/TransactionController'
+import commentController from '@src/API/Comment/CommentController'
 import dotenv from 'dotenv';
+import mongoDB from './Config/database.config';
+
 // **** Variables **** //
 
 dotenv.config()
@@ -122,6 +125,7 @@ app.use('/company',companyController)
 app.use('/auth',authController)
 app.use('/cart',cartConroller)
 app.use('/transaction',trasactionController)
+app.use('/comment',commentController)
 // **** Export default **** //
 
 export {app,prisma};
