@@ -50,21 +50,15 @@ async function CreateSubComment(id:string,name:string,req:ISubCommentReq) {
 }
 
  async function ListComment(id:string) {
-    let id_comment = ""
     const litsComment = await commentModel.find({
             id_product:id
 
     })
 
-    const array = litsComment.map((item)=>{
-        id_comment = item.id
-    })
-
-    const subcomment = await subCommentModel.find({
-        id_comment:id_comment
-    })
-
-    const result = litsComment.map((item)=>{
+    const data = litsComment.map(async(item)=>{
+        const subcomment = await subCommentModel.find({
+            id_comment:item._id
+        })
         return{
             id_comment:item.id,
             username:item.username,
@@ -78,6 +72,7 @@ async function CreateSubComment(id:string,name:string,req:ISubCommentReq) {
             })
         }
     })
+    const result = await Promise.all(data)
     console.log(result);
     
 

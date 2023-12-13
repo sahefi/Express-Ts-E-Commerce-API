@@ -1,9 +1,11 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs"
+import { S3 } from "aws-sdk";
+import s3 from "@src/Config/Aws-s3.config";
 
 export async function uploadMiddleware() {
-    const storage = multer.diskStorage({
+    const storage = await multer.diskStorage({
         destination: function (req, file, cb) {
             const uploadPath = path.join(__dirname, '../../../', 'image'); // Resolve the upload path
             cb(null, uploadPath); // Simpan file di folder 'uploads/'
@@ -55,4 +57,23 @@ export async function uploadFile(req: any, res: any, next: any) {
     }
   }
 
-  
+
+
+
+// async function uploadFileToS3(bucketName: string, awspath: string, keyName: string) {
+//   const fileContent = await fs.readFileSync(awspath);
+
+//   const params = {
+//     Bucket: bucketName,
+//     Key: keyName,
+//     Body: fileContent,
+//   };
+
+//   try {
+//     const data = await s3.upload(params).promise();
+//     console.log('File uploaded successfully. S3 Location:', data.Location);
+//   } catch (error) {
+//     console.error('Error uploading file:', error);
+//   }
+// }
+

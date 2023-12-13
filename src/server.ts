@@ -31,6 +31,7 @@ import authController from '@src/API/Auth/AuthController'
 import cartConroller from '@src/API/Cart/CartController'
 import trasactionController from '@src/API/Transaction/TransactionController'
 import commentController from '@src/API/Comment/CommentController'
+import financeController from '@src/API/Finance/FinanceController'
 import dotenv from 'dotenv';
 import mongoDB from './Config/database.config';
 
@@ -126,6 +127,7 @@ app.use('/auth',authController)
 app.use('/cart',cartConroller)
 app.use('/transaction',trasactionController)
 app.use('/comment',commentController)
+app.use('/finance',financeController)
 // **** Export default **** //
 
 export {app,prisma};

@@ -2,6 +2,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes'
 import { ICreateProduct, IListProduct, IUpdateProduct } from '@src/models/Product'
 import { NotFoundException } from '@src/other/classes'
 import { prisma } from '@src/server'
+import s3UploadMiddleware from '@src/services/Common/awsUploadservice'
 import { DeleteFile, uploadFile, uploadMiddleware } from '@src/services/Common/uploadService'
 import ProductService from '@src/services/Product/ProductService'
 import express, { Request, Response } from 'express'
@@ -9,7 +10,7 @@ import multer from 'multer'
 const router = express.Router()
 const upload = multer()
 
-router.post('/',uploadFile,async(req:Request,res:Response)=>{
+router.post('/',s3UploadMiddleware,async(req:Request,res:Response)=>{
     try {
         if (!req.body.image_link) {
             return res.status(400).json({ status: false, message: 'File upload failed' });
