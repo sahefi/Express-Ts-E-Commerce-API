@@ -68,7 +68,7 @@ router.get('/',async(req:Request,res:Response)=>{
     
 })
 
-router.patch('/',uploadFile,async(req:Request,res:Response)=>{
+router.patch('/',s3UploadMiddleware,async(req:Request,res:Response)=>{
     try {
             if (!req.body.image_link) {
                 return res.status(400).json({ status: false, message: 'File upload failed' });
@@ -112,8 +112,6 @@ router.delete('/',async(req:Request,res:Response)=>{
         if(!find){
             throw new NotFoundException('Id Not Found')
         }
-        const filePathToDelete = find.image_link||''; // Make sure this is the correct file path
-        await DeleteFile(filePathToDelete);
         const deleteProduct = await ProductService.DeleteProduct(find.id)
         res.status(HttpStatusCodes.OK).send(deleteProduct)
     } catch (error) {
