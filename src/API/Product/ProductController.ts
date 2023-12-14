@@ -10,7 +10,7 @@ import multer from 'multer'
 const router = express.Router()
 const upload = multer()
 
-router.post('/',s3UploadMiddleware,async(req:Request,res:Response)=>{
+router.post('/',uploadMiddleware,async(req:Request,res:Response)=>{
     try {
         if (!req.body.image_link) {
             return res.status(400).json({ status: false, message: 'File upload failed' });
@@ -68,7 +68,7 @@ router.get('/',async(req:Request,res:Response)=>{
     
 })
 
-router.patch('/',s3UploadMiddleware,async(req:Request,res:Response)=>{
+router.patch('/',uploadMiddleware,async(req:Request,res:Response)=>{
     try {
             if (!req.body.image_link) {
                 return res.status(400).json({ status: false, message: 'File upload failed' });
