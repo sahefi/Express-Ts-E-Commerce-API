@@ -23,8 +23,8 @@ async function payTransaction(req:IPayTransaction,id:string
     // console.log(find);
     
 
+    
     let total = 0
-
    const transaction = await prisma.$transaction(async(tx)=>{
         find.map((item)=>{
             total += Math.ceil(Number(item.product?.price)) * Number(item.quantity)

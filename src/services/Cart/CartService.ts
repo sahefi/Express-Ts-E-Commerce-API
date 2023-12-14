@@ -94,9 +94,11 @@ async function ListCart(id:string,req:IListCart) {
         }
     })
     let total_price = 0
-    if(result.length > 1){
+    if(result.length >= 1){
         total_price = await result.map((item)=>item.sub_total).reduce((acc,sub_total)=>Number(acc)+Number(sub_total))
     }
+    console.log(total_price);
+    
     return{
         status:true,
         message:'Succes',
