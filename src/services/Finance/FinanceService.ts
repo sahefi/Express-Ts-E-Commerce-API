@@ -94,7 +94,7 @@ async function List(req:IFinance) {
         }
     })
 
-    const lastMonth = lastMonthTotal.map((item)=>{
+    lastMonthTotal.map((item)=>{
         totalLastMonth += Math.ceil(Number(item.total))
     })
 
