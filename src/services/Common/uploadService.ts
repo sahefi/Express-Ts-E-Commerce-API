@@ -2,7 +2,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs"
 import { S3 } from "aws-sdk";
-import s3 from "@src/Config/Aws-s3.config";
+// import s3 from "@src/Config/Aws-s3.config";
 
 export async function uploadMiddleware() {
     const storage = await multer.diskStorage({
