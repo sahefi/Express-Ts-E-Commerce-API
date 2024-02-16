@@ -51,9 +51,9 @@ async function List(req:IFinance) {
         }
     })
     
-    const data = findBillheader.map((item)=>{
+    const data = findBillheader.map((item:any)=>{
         total += Math.ceil(Number(item.total))
-        const bill_detail = item.bill_detail.map((item)=>{ 
+        const bill_detail = item.bill_detail.map((item:any)=>{ 
             if(item.product.type_gun === 'GUN'){
                 return{
                     name:item.product.name,
@@ -71,8 +71,8 @@ async function List(req:IFinance) {
                 
             }
         })
-        const gun = bill_detail.filter((billDetail)=>billDetail.type === 'GUN')
-        totalGun += gun.reduce((currentValue, currentItem)=>{
+        const gun = bill_detail.filter((billDetail:any)=>billDetail.type === 'GUN')
+        totalGun += gun.reduce((currentValue:any, currentItem:any)=>{
             return Math.ceil(Number(currentValue)) + Math.ceil(Number(currentItem.sub_total))
         },0)
 
@@ -94,7 +94,7 @@ async function List(req:IFinance) {
         }
     })
 
-    lastMonthTotal.map((item)=>{
+    lastMonthTotal.map((item:any)=>{
         totalLastMonth += Math.ceil(Number(item.total))
     })
 

@@ -83,7 +83,7 @@ async function ListCart(id:string,req:IListCart) {
     // }
 
 
-    const result = await list.map((item)=>{
+    const result = await list.map((item:any)=>{
         return{
             id_cart:item.id,
             id_product:item.id_product,
@@ -95,7 +95,7 @@ async function ListCart(id:string,req:IListCart) {
     })
     let total_price = 0
     if(result.length >= 1){
-        total_price = await result.map((item)=>item.sub_total).reduce((acc,sub_total)=>Number(acc)+Number(sub_total))
+        total_price = await result.map((item:any)=>item.sub_total).reduce((acc:any,sub_total:any)=>Number(acc)+Number(sub_total))
     }
     console.log(total_price);
     

@@ -47,7 +47,7 @@ export async function CallbackXendit(req:ICallbackXendit) {
             }
         })
 
-        await prisma.$transaction (async(tx)=>{
+        await prisma.$transaction (async(tx:any)=>{
             const paid = await tx.bill_Header.update({
                 where:{
                     id:req.external_id
@@ -70,7 +70,7 @@ export async function CallbackXendit(req:ICallbackXendit) {
                 }
             })
 
-            await paid.bill_detail.map((item)=>{
+            await paid.bill_detail.map((item:any)=>{
                 const sub_total = Math.ceil(Number(item.sub_total))
                 return{
                     id_audit_bill_header:auditBillHeader.id,
