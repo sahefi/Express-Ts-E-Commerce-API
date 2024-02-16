@@ -5,7 +5,7 @@ import { prisma } from "@src/server";
 
 
 async function Create(req:ICreateProduct) {
-    const result = await prisma.$transaction(async(tx)=>{
+    const result = await prisma.$transaction(async(tx:any)=>{
         const find = await tx.gco.findMany({
             where:{
                 OR: [
@@ -77,7 +77,7 @@ async function ListProduct(req:IListProduct) {
         skip:skip,take:take
     })
 
-    const result = list.map((item)=>{
+    const result = list.map((item:any)=>{
         return{
             id:item.id,
             name:item.name,

@@ -28,7 +28,7 @@ async function listRole(req:IListRole) {
         take:take,skip:skip
     })
 
-    const result = list.map((item)=>{
+    const result = list.map((item:any)=>{
         return{
             id_role:item.id,
             name:item.name
@@ -48,7 +48,7 @@ async function listRole(req:IListRole) {
 }
 
 async function UpdateRole(req:IUpdateRole) {
-    const result = await prisma.$transaction(async(tx)=>{
+    const result = await prisma.$transaction(async(tx:any)=>{
         const find = await prisma.role.findUnique({
             where:{
                 id:req.id

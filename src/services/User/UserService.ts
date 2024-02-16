@@ -58,7 +58,7 @@ async function _delete(id: number){
 async function Register(req:ICreated){
 
 
-  const result = await prisma.$transaction(async(tx)=>{
+  const result = await prisma.$transaction(async(tx:any)=>{
     const findRole = await tx.role.findFirst({
       where:{
         name:'Customer'
@@ -122,7 +122,7 @@ async function Register(req:ICreated){
 
 async function UpdateCustomer(req:IUpdated) {
   
-  const result = await prisma.$transaction(async(tx)=>{
+  const result = await prisma.$transaction(async(tx:any)=>{
     const findRole = await tx.role.findFirst({
       where:{
         name:'Customer'
@@ -190,7 +190,7 @@ async function listCustomer(req:IList) {
     },
     take:take,skip:skip
   })
-  const result = list.map((item)=>{
+  const result = list.map((item:any)=>{
     return{
       id_customer:item.id,
       username:item.user?.username,
@@ -214,7 +214,7 @@ async function listCustomer(req:IList) {
 
 
 async function deletedCustomer(req:IDelete) {
-  const result = await prisma.$transaction(async(tx)=>{
+  const result = await prisma.$transaction(async(tx:any)=>{
     const deleteCustomer = await tx.customer.delete({
       where:{
         id:req.id_customer

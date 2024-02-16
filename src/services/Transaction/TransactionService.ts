@@ -25,8 +25,8 @@ async function payTransaction(req:IPayTransaction,id:string
 
     
     let total = 0
-   const transaction = await prisma.$transaction(async(tx)=>{
-        find.map((item)=>{
+   const transaction = await prisma.$transaction(async(tx:any)=>{
+        find.map((item:any)=>{
             total += Math.ceil(Number(item.product?.price)) * Number(item.quantity)
         })
         const createBillHeader = await tx.bill_Header.create({
@@ -36,7 +36,7 @@ async function payTransaction(req:IPayTransaction,id:string
                 status_payment:'PENDING',
             }
         })
-        const productBillDetail = find.map((item)=>{
+        const productBillDetail = find.map((item:any)=>{
             const sub_total = Math.ceil(Number(item.product?.price)) * Number(item.quantity)
             return{
                 id_bill_header:createBillHeader.id,
@@ -59,7 +59,7 @@ async function payTransaction(req:IPayTransaction,id:string
             }
         })
         
-        const productAuditBillDetail = find.map((item)=>{
+        const productAuditBillDetail = find.map((item:any)=>{
             const sub_total = Math.ceil(Number(item.product?.price)) * Number(item.quantity)
             return{
                 id_audit_bill_header:auditBillHeader.id,

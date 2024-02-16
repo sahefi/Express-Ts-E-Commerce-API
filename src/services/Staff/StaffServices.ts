@@ -4,7 +4,7 @@ import { prisma } from "@src/server";
 import bcrypt from "bcrypt"
 
 async function createStaff(req:ICreatedStaff) {
-    const result = await prisma.$transaction(async(tx)=>{
+    const result = await prisma.$transaction(async(tx:any)=>{
         const find = await tx.user.findUnique({
             where:{
                 username:req.username
@@ -52,7 +52,7 @@ async function createStaff(req:ICreatedStaff) {
 
 async function updateStaff(req:IUpdatedStaff) {
 
-    const result = await prisma.$transaction(async(tx)=>{
+    const result = await prisma.$transaction(async(tx:any)=>{
         const findRole = await tx.role.findUnique({
             where:{
                 id:req.id_role
@@ -125,7 +125,7 @@ async function listStaff(req:IListStaff) {
         skip:skip,take:take
     })
 
-    const result = list.map((item)=>{
+    const result = list.map((item:any)=>{
         return{
             id_staff:item.id,
             username:item.user?.username,
@@ -146,7 +146,7 @@ async function listStaff(req:IListStaff) {
 }
 
 async function DeleteStaff(req:IDeleteStaff) {
-    const result = await prisma.$transaction(async(tx)=>{
+    const result = await prisma.$transaction(async(tx:any)=>{
         const find = await tx.staff.findUnique({
             where:{
                 id:req.id_staff
