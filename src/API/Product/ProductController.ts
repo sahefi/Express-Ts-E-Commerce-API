@@ -9,11 +9,11 @@ import multer from 'multer'
 const router = express.Router()
 const upload = multer()
 
-router.post('/',uploadMiddleware,async(req:Request,res:Response)=>{
+router.post('/',async(req:Request,res:Response)=>{
     try {
-        if (!req.body.image_link) {
-            return res.status(400).json({ status: false, message: 'File upload failed' });
-          }
+        // if (!req.body.image_link) {
+        //     return res.status(400).json({ status: false, message: 'File upload failed' });
+        //   }
         const reqDto:ICreateProduct = {
             name:req.body.name as string,
             description:req.body.description as string,
@@ -21,7 +21,6 @@ router.post('/',uploadMiddleware,async(req:Request,res:Response)=>{
             price:Number(req.body.price),
             type_ammo:req.body.type_ammo as string,
             type_gun:req.body.type_gun as string,
-            image_link: req.body.image_link
         }
         const create = await ProductService.Create(reqDto)
         res.status(HttpStatusCodes.OK).send(create)

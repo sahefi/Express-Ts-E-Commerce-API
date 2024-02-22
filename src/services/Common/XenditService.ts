@@ -90,7 +90,7 @@ export async function CallbackXendit(req:ICallbackXendit) {
             }
         })
 
-        const paid = await prisma.bill_Header.update({
+        await prisma.bill_Header.update({
             where:{
                 id:req.external_id
             },

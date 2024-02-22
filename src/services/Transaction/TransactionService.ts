@@ -3,8 +3,7 @@ import { NotFoundException } from "@src/other/classes";
 import { prisma } from "@src/server";
 import { Invoice } from "../Common/XenditService";
 
-async function payTransaction(req:IPayTransaction,id:string
-    ) {
+async function payTransaction(req:IPayTransaction,id:string) {
     const find = await prisma.cart.findMany({
         where:{
             id:{
@@ -20,9 +19,7 @@ async function payTransaction(req:IPayTransaction,id:string
     if(find.length < 1){
         throw new NotFoundException('Cart Not Found')
     }
-    // console.log(find);
     
-
     
     let total = 0
    const transaction = await prisma.$transaction(async(tx:any)=>{
@@ -46,7 +43,6 @@ async function payTransaction(req:IPayTransaction,id:string
                 sub_total:sub_total
             }
         })
-        console.log('halop',productBillDetail)
         await tx.bill_Detail.createMany({
             data:productBillDetail
         })
@@ -74,7 +70,7 @@ async function payTransaction(req:IPayTransaction,id:string
             data:productAuditBillDetail
         })
 
-        const invoice=await Invoice({
+        const invoice= await Invoice({
             external_id: createBillHeader.id,
             amount: total,
             payer_email: find[0].customer?.email||'',
@@ -94,7 +90,6 @@ async function payTransaction(req:IPayTransaction,id:string
             }
         })
 
-        console.log(invoice)
         await DeleteCart(req.id_cart)
         return{
             invoice_url: invoice.invoice_url ,
@@ -108,6 +103,8 @@ async function payTransaction(req:IPayTransaction,id:string
     }
     
 }
+
+
 async function DeleteCart(req:string[]) {
     const deleteCart = await prisma.cart.deleteMany({
         where:{

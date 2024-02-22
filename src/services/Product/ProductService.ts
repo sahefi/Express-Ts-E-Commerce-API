@@ -17,7 +17,7 @@ async function Create(req:ICreateProduct) {
         if(!find){
             throw new NotFoundException('Type Ammo And Gun Not Valid')
         }
-        const findGun = await tx.gco.findMany({
+        await tx.gco.findMany({
             where:{
                 type:'GUN'
             }
@@ -30,7 +30,6 @@ async function Create(req:ICreateProduct) {
                 type_gun:req.type_gun,
                 price:req.price,
                 max_ammo:req.max_ammo || 0,
-                image_link:req.image_link
             },
             include:{
                 typeAmmo:true,
@@ -47,7 +46,6 @@ async function Create(req:ICreateProduct) {
             type_gun:create.typeGun?.name || null,
             price:Math.ceil(Number(create.price)),
             max_ammo:create.max_ammo || 0,
-            image_link:create.image_link || null
         }
     })
     return{

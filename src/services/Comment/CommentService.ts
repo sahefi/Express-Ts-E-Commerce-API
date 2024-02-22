@@ -1,6 +1,6 @@
 import commentModel, { ICommentReq } from "@src/models/Comment";
 import subCommentModel, { ISubCommentReq } from "@src/models/SubComment";
-import { log } from "util";
+
 
 async function CreateComment(id:string,name:string,req:ICommentReq) {
     const createComment = await commentModel.create({

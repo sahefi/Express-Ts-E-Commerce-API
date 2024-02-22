@@ -4,7 +4,7 @@ import UserService from '@src/services/User/UserService';
 import { registerValidator, updateCustomerValidator } from '@src/services/Validation/Validation';
 import express, { Request, Response } from 'express';
 import { requestValidator } from '../BaseController';
-import { BadRequestException } from '@src/other/classes';
+
 
 const router = express.Router()
 

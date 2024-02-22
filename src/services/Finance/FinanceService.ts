@@ -5,10 +5,10 @@ import moment from "moment";
 
 async function List(req:IFinance) {
 
-    const startCurrentDate = DateTime.now().startOf('month').setZone('Asia/Jakarta').toJSDate().toISOString();
-    const endCurrentDate = DateTime.now().endOf('month').setZone('Asia/Jakarta').toJSDate().toISOString();
-    let startReqDate = null
-    let endReqDate = null
+    const startCurrentYear = DateTime.now().startOf('year').setZone('Asia/Jakarta').toJSDate().toISOString();
+    const endCurrentYear = DateTime.now().endOf('year').setZone('Asia/Jakarta').toJSDate().toISOString();
+    let startReqYear = null
+    let endReqYear = null
     let total = 0
     let totalGun = 0
     let totalStuff = 0
@@ -17,8 +17,8 @@ async function List(req:IFinance) {
     let plus = 0
     let minus = 0 
     if(req.periode){
-         endReqDate = moment(req.periode,'MM-YYYY').endOf('month').toDate().toISOString()
-         startReqDate = moment(req.periode,'MM-YYYY').startOf('month').toDate().toISOString() 
+         endReqYear = moment(req.periode,'YYYY').endOf('year').toDate().toISOString()
+         startReqYear = moment(req.periode,'YYYY').startOf('year').toDate().toISOString() 
     }
     const findBillheader = await prisma.bill_Header.findMany({
         include:{
@@ -43,8 +43,8 @@ async function List(req:IFinance) {
             AND:{
                 status_payment:'PAID',
                 payment_date:{
-                   gte:startReqDate||startCurrentDate,
-                   lte:endReqDate||endCurrentDate
+                   gte:startReqYear||startCurrentYear,
+                   lte:endReqYear||endCurrentYear
                 }
             }
 
@@ -89,7 +89,7 @@ async function List(req:IFinance) {
         where:{
             status_payment:'PAID',
             payment_date:{
-                lte:startReqDate||startCurrentDate
+                lte:startReqYear||startCurrentYear
             }
         }
     })
@@ -110,20 +110,123 @@ async function List(req:IFinance) {
 
     return{
         data:data,
-        total_gun:Math.ceil(totalGun),
-        total_stuff:totalStuff,
-        total:Number(total),
-        status_profit:statusProfit,
-        plus:plus,
-        minus:minus
+        // total_gun:Math.ceil(totalGun),
+        // total_stuff:totalStuff,
+        // total:Number(total),
+        // status_profit:statusProfit,
+        // plus:plus,
+        // minus:minus
     }
 
 
     
 }
 
+async function pivotTable(req: IFinance) {
+    const startCurrentYear = DateTime.now().startOf('year').setZone('Asia/Jakarta').toJSDate().toISOString();
+    const endCurrentYear = DateTime.now().endOf('year').setZone('Asia/Jakarta').toJSDate().toISOString();
+    let startReqYear = null
+    let endReqYear = null
+    let totalPerBulan: Record<string, Record<string, number>> = {};
+    let totalPerBulanSemuaMenu: Record<string, number>= {};
+    let totalPerTahunMenu: Record<string, number> = {};
+    let totalPerTahun = 0;
+
+    if (req.periode) {
+        endReqYear = moment(req.periode, 'YYYY').endOf('year').toDate().toISOString()
+        startReqYear = moment(req.periode, 'YYYY').startOf('year').toDate().toISOString()
+    }
+
+    const findBillheader = await prisma.bill_Header.findMany({
+        include: {
+            customer: true,
+            bill_detail: {
+                include: {
+                    product: {
+                        include: {
+                            typeGun: true
+                        }
+                    }
+                }
+            }
+
+        },
+        orderBy: {
+            customer: {
+                name: 'asc'
+            }
+        },
+        where: {
+            AND: {
+                status_payment: 'PAID',
+                payment_date: {
+                    gte: startReqYear || startCurrentYear,
+                    lte: endReqYear || endCurrentYear
+                }
+            }
+
+        }
+    })
+
+    findBillheader.map(item => {
+        item.bill_detail.map(detail => {
+            const { product, qty, price } = detail;
+            const { name } = product;
+            const month = item.payment_date && DateTime.fromJSDate(item.payment_date).toFormat('MMMM');
+
+            if (month) {
+                //total per bulan per menu
+                if (!totalPerBulan[name]) {
+                    totalPerBulan[name] = {};
+                }
+                totalPerBulan[name][month] = (totalPerBulan[name][month] || 0) + Math.ceil(Number(qty)) * Math.ceil(Number(price));
+
+                //total perbulan semua menu
+                if (!totalPerBulanSemuaMenu[month]) {
+                    totalPerBulanSemuaMenu[month] = 0;
+                }
+                totalPerBulanSemuaMenu[month] += Math.ceil(Number(qty)) * Math.ceil(Number(price));
+
+                //total pertahun setiap menu
+                if (!totalPerTahunMenu[name]){
+                    totalPerTahunMenu[name] = 0;
+                }
+
+                totalPerTahunMenu[name] += Math.ceil(Number(qty)) * Math.ceil(Number(price));
+            } else {
+                console.error('Nilai bulan null!');
+            }
+            totalPerTahun += Math.ceil(Number(qty)) * Math.ceil(Number(price));
+        });
+    });
+
+    // Format hasil sesuai dengan struktur JSON yang diinginkan
+    const result = {
+        tahun: req.periode || DateTime.now().toFormat('yyyy'),
+        data_per_tahun: Object.entries(totalPerTahunMenu).reduce((acc : Record<string, any>, [menu, total]) => {
+            acc[menu] = {
+                total_pertahun: total,
+                total_per_bulan: { ...totalPerBulan[menu] }
+            };
+            return acc;
+        }, {}),
+        total_per_bulan_dari_semua_menu: { ...totalPerBulanSemuaMenu },
+        total_per_tahun: totalPerTahun
+    };
+
+    
+    
+    return {
+        status:true,
+        message:"Success",
+        data:result
+    }
+}
+
+
 
 
 export default {
-    List
+    List,
+    pivotTable
 }
